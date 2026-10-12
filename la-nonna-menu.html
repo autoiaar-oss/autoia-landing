@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    width: 900px;
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #faf6ee;
+    color: #2b1a12;
+    padding: 0;
+  }
+  header {
+    background: linear-gradient(135deg, #7a1f1f 0%, #4a1010 100%);
+    color: #faf6ee;
+    text-align: center;
+    padding: 36px 24px 28px;
+  }
+  header h1 { margin: 0; font-size: 42px; letter-spacing: 1px; }
+  header p { margin: 8px 0 0; font-size: 16px; opacity: 0.9; font-style: italic; }
+  main { padding: 28px 48px 40px; }
+  .category { margin-bottom: 26px; }
+  .category h2 {
+    font-size: 22px;
+    color: #7a1f1f;
+    border-bottom: 2px solid #d4af37;
+    padding-bottom: 6px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 6px 0;
+    font-size: 16px;
+  }
+  .item .name { font-weight: bold; }
+  .item .desc { font-size: 13px; color: #6b5a4a; font-style: italic; display: block; margin-top: 1px; }
+  .item .price { font-weight: bold; color: #7a1f1f; white-space: nowrap; margin-left: 16px; }
+  .dots { flex: 1; border-bottom: 1px dotted #c4b8a8; margin: 0 8px 6px; }
+  footer {
+    text-align: center;
+    padding: 18px 24px 28px;
+    font-size: 13px;
+    color: #6b5a4a;
+    border-top: 1px solid #e0d5c3;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🍕 La Nonna Pizzería</h1>
+  <p>Av. Corrientes 2847, CABA — 11-4444-5555</p>
+</header>
+
+<main>
+  <div class="category">
+    <h2>Pizzas</h2>
+    <div class="item"><span class="name">Muzzarella</span><span class="dots"></span><span class="price">$8.500</span></div>
+    <div class="item"><span class="name">Napolitana</span><span class="dots"></span><span class="price">$9.800</span></div>
+    <div class="item"><span class="name">Fugazzeta</span><span class="dots"></span><span class="price">$9.200</span></div>
+    <div class="item"><span class="name">Calabresa</span><span class="dots"></span><span class="price">$10.500</span></div>
+    <div class="item"><span class="name">Cuatro Quesos</span><span class="dots"></span><span class="price">$11.200</span></div>
+    <div class="item"><span class="name">Rúcula y Jamón Crudo</span><span class="dots"></span><span class="price">$12.800</span></div>
+    <div class="item"><span class="name">Vegana</span><span class="dots"></span><span class="price">$10.200</span></div>
+    <div class="item"><span class="name">Especial de la Casa</span><span class="dots"></span><span class="price">$13.500</span></div>
+  </div>
+
+  <div class="category">
+    <h2>Empanadas (unidad)</h2>
+    <div class="item"><span class="name">Carne</span><span class="dots"></span><span class="price">$1.100</span></div>
+    <div class="item"><span class="name">Jamón y Queso</span><span class="dots"></span><span class="price">$1.000</span></div>
+    <div class="item"><span class="name">Verdura</span><span class="dots"></span><span class="price">$950</span></div>
+    <div class="item"><span class="name">Árabe</span><span class="dots"></span><span class="price">$1.150</span></div>
+  </div>
+
+  <div class="category">
+    <h2>Pastas</h2>
+    <div class="item"><span class="name">Fideos Frescos</span><span class="dots"></span><span class="price">$7.500</span></div>
+    <div class="item"><span class="name">Lasagna</span><span class="dots"></span><span class="price">$9.800</span></div>
+    <div class="item"><span class="name">Ñoquis</span><span class="dots"></span><span class="price">$8.200</span></div>
+    <div class="item"><span class="name">Ravioles</span><span class="dots"></span><span class="price">$9.200</span></div>
+  </div>
+
+  <div class="category">
+    <h2>Postres</h2>
+    <div class="item"><span class="name">Tiramisú</span><span class="dots"></span><span class="price">$4.200</span></div>
+    <div class="item"><span class="name">Panna Cotta</span><span class="dots"></span><span class="price">$3.800</span></div>
+    <div class="item"><span class="name">Cannoli</span><span class="dots"></span><span class="price">$3.500</span></div>
+  </div>
+
+  <div class="category">
+    <h2>Bebidas</h2>
+    <div class="item"><span class="name">Gaseosa Línea Coca-Cola 500ml</span><span class="dots"></span><span class="price">$2.200</span></div>
+    <div class="item"><span class="name">Agua Mineral 500ml</span><span class="dots"></span><span class="price">$1.500</span></div>
+    <div class="item"><span class="name">Vino de la Casa (copa)</span><span class="dots"></span><span class="price">$3.200</span></div>
+    <div class="item"><span class="name">Vino de la Casa (botella)</span><span class="dots"></span><span class="price">$11.500</span></div>
+    <div class="item"><span class="name">Cerveza Artesanal 500ml</span><span class="dots"></span><span class="price">$3.800</span></div>
+  </div>
+</main>
+
+<footer>
+  Delivery gratuito a Palermo, Villa Crespo, Almagro y Caballito · 10% de descuento pagando en efectivo al retirar
+</footer>
+
+</body>
+</html>
