@@ -102,6 +102,26 @@
   .cta-banner .btn-primary { background: var(--accent); }
   .cta-banner .btn-primary:hover { background: var(--accent-light); }
 
+  /* ---------- CONTACT FORM ---------- */
+  #contact-form { max-width: 440px; margin: 0 auto; text-align: left; }
+  #contact-form label { display: block; font-size: 13px; font-weight: 600; color: #c9c4da; margin: 14px 0 6px; }
+  #contact-form label:first-of-type { margin-top: 0; }
+  #contact-form input, #contact-form textarea {
+    width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.06); color: white; font-family: inherit; font-size: 14px;
+  }
+  #contact-form input::placeholder, #contact-form textarea::placeholder { color: #8a84a0; }
+  #contact-form input:focus, #contact-form textarea:focus { outline: none; border-color: var(--accent-light); }
+  #contact-form textarea { resize: vertical; min-height: 90px; }
+  #contact-form button { width: 100%; margin-top: 20px; background: var(--accent); color: white; border: none; padding: 14px; border-radius: 10px; font-weight: 600; font-size: 15px; cursor: pointer; font-family: inherit; }
+  #contact-form button:hover { background: var(--accent-light); }
+  #contact-form button:disabled { opacity: .6; cursor: not-allowed; }
+  #form-status { margin-top: 14px; font-size: 13.5px; min-height: 18px; }
+  #form-status.ok { color: #7ee2a8; }
+  #form-status.err { color: #ff9b9b; }
+  .cta-fallback { color: #8a84a0; font-size: 13px; margin-top: 24px; }
+  .cta-fallback a { color: #c9b8f5; text-decoration: underline; }
+
   /* ---------- FOOTER ---------- */
   footer { padding: 56px 0 40px; border-top: 1px solid var(--border); }
   footer .wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
@@ -201,21 +221,14 @@
         <div class="service-icon">💳</div>
         <h3>Pagos integrados</h3>
         <p>Cobro online directo desde la carta digital y desde WhatsApp, para pedidos pagos de punta a punta sin intervención humana.</p>
-        <span class="service-tag">Roadmap</span>
+        <span class="service-tag">En desarrollo</span>
       </div>
 
       <div class="service-card">
         <div class="service-icon">📈</div>
         <h3>Analítica e inteligencia de negocio</h3>
         <p>Reportes de ventas, productos más pedidos, horarios pico y comportamiento de clientes, para decisiones basadas en datos reales de tu propio canal.</p>
-        <span class="service-tag">Roadmap</span>
-      </div>
-
-      <div class="service-card">
-        <div class="service-icon">🏦</div>
-        <h3>Soluciones financieras para gastronomía</h3>
-        <p>Como parte de la visión de largo plazo de AutoIA, trabajamos hacia productos de crédito y financiamiento pensados para las necesidades de capital de trabajo de un restaurante.</p>
-        <span class="service-tag">Visión a futuro</span>
+        <span class="service-tag">En desarrollo</span>
       </div>
     </div>
   </div>
@@ -308,20 +321,75 @@
     <div class="cta-banner">
       <h2>Conocé AutoIA en una demo de 20 minutos</h2>
       <p>Te mostramos el agente funcionando en vivo, con pedidos reales, y resolvemos cualquier duda sobre cómo se adapta a tu local.</p>
-      <a class="btn-primary" href="mailto:autoia.ar@gmail.com">Escribinos a autoia.ar@gmail.com</a>
+
+      <form id="contact-form">
+        <label for="f-name">Tu nombre</label>
+        <input id="f-name" name="name" type="text" placeholder="Nombre y apellido" required />
+
+        <label for="f-email">Tu email</label>
+        <input id="f-email" name="email" type="email" placeholder="vos@tunegocio.com" required />
+
+        <label for="f-message">Contanos sobre tu negocio</label>
+        <textarea id="f-message" name="message" placeholder="Nombre del local, rubro, qué te gustaría resolver..." required></textarea>
+
+        <button type="submit" id="f-submit">Enviar mensaje</button>
+        <p id="form-status" role="status"></p>
+      </form>
+
+      <p class="cta-fallback">O escribinos directo a <a href="mailto:autoia.ar@gmail.com">autoia.ar@gmail.com</a></p>
     </div>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    <div class="foot-left">AutoIA · Buenos Aires, Argentina</div>
+    <div class="foot-left">© 2026 AutoIA. Todos los derechos reservados. · Buenos Aires, Argentina</div>
     <div class="foot-links">
       <a href="/privacidad/">Política de privacidad</a>
       <a href="mailto:autoia.ar@gmail.com">Contacto</a>
     </div>
   </div>
 </footer>
+
+<script>
+  const form = document.getElementById("contact-form");
+  const status = document.getElementById("form-status");
+  const submitBtn = document.getElementById("f-submit");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Enviando...";
+    status.textContent = "";
+    status.className = "";
+
+    const data = {
+      name: document.getElementById("f-name").value,
+      email: document.getElementById("f-email").value,
+      message: document.getElementById("f-message").value,
+      _subject: "Nuevo contacto desde la landing de AutoIA",
+    };
+
+    try {
+      const res = await fetch("https://formsubmit.co/ajax/autoia.ar@gmail.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error("No se pudo enviar");
+
+      status.textContent = "¡Listo! Te vamos a contestar a la brevedad.";
+      status.className = "ok";
+      form.reset();
+    } catch (err) {
+      status.textContent = "No pudimos enviar el mensaje. Escribinos directo a autoia.ar@gmail.com.";
+      status.className = "err";
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Enviar mensaje";
+    }
+  });
+</script>
 
 </body>
 </html>
