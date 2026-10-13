@@ -4,74 +4,323 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>AutoIA — Automatización con IA para gastronomía</title>
+<meta name="description" content="Agentes de inteligencia artificial para restaurantes: pedidos por WhatsApp, panel de control en tiempo real y carta digital con carrito. Automatización gastronómica en Argentina y Uruguay." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root { color-scheme: light; }
-  * { box-sizing: border-box; }
+  :root {
+    --ink: #0c0c14;
+    --ink-soft: #4a4a58;
+    --bg: #ffffff;
+    --bg-alt: #f6f5fa;
+    --accent: #6b2fe0;
+    --accent-light: #8b5cf6;
+    --accent-pale: #f1ecfd;
+    --border: #e6e4ee;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
   body {
-    margin: 0;
-    font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-    background: #faf8f5;
-    color: #1a1a1a;
+    font-family: "Inter", -apple-system, Segoe UI, Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
     line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
   }
-  header {
-    padding: 80px 24px 60px;
-    text-align: center;
-    background: linear-gradient(135deg, #1a7a3c 0%, #0f5c2a 100%);
-    color: white;
-  }
-  header h1 { font-size: clamp(2rem, 5vw, 3.2rem); margin: 0 0 12px; }
-  header p { font-size: 1.2rem; opacity: 0.92; max-width: 560px; margin: 0 auto; }
-  main { max-width: 760px; margin: 0 auto; padding: 56px 24px; }
-  section { margin-bottom: 48px; }
-  h2 { font-size: 1.5rem; border-left: 4px solid #1a7a3c; padding-left: 14px; }
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 24px; }
-  .card { background: white; border: 1px solid #e8e4dc; border-radius: 10px; padding: 24px; }
-  .card h3 { margin-top: 0; font-size: 1.05rem; }
-  .card p { margin-bottom: 0; color: #555; font-size: 0.95rem; }
-  footer { text-align: center; padding: 40px 24px; color: #777; font-size: 0.9rem; border-top: 1px solid #e8e4dc; }
-  a { color: #1a7a3c; }
+  h1, h2, h3, h4 { font-family: "Poppins", sans-serif; letter-spacing: -0.02em; }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- NAV ---------- */
+  nav { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+  .logo { font-family: "Poppins", sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.03em; }
+  .logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 32px; font-size: 14px; font-weight: 500; }
+  .nav-links a { color: var(--ink-soft); transition: color .15s; }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-cta { background: var(--ink); color: white; padding: 10px 20px; border-radius: 999px; font-size: 14px; font-weight: 600; }
+  .nav-cta:hover { background: var(--accent); }
+  @media (max-width: 760px) { .nav-links { display: none; } }
+
+  /* ---------- HERO ---------- */
+  header.hero { padding: 100px 0 90px; background: radial-gradient(circle at 80% 0%, var(--accent-pale), transparent 60%); overflow: hidden; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-pale); color: var(--accent); font-size: 13px; font-weight: 600; padding: 7px 16px; border-radius: 999px; margin-bottom: 28px; }
+  .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+  .hero h1 { font-size: clamp(2.4rem, 5.2vw, 4.2rem); font-weight: 800; line-height: 1.08; max-width: 820px; }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero p.lead { font-size: 1.2rem; color: var(--ink-soft); max-width: 600px; margin-top: 24px; }
+  .hero-ctas { display: flex; gap: 14px; margin-top: 36px; flex-wrap: wrap; }
+  .btn-primary { background: var(--ink); color: white; padding: 15px 28px; border-radius: 10px; font-weight: 600; font-size: 15px; display: inline-block; transition: background .15s, transform .1s; }
+  .btn-primary:hover { background: var(--accent); transform: translateY(-1px); }
+  .btn-secondary { border: 1.5px solid var(--border); color: var(--ink); padding: 14px 28px; border-radius: 10px; font-weight: 600; font-size: 15px; display: inline-block; transition: border-color .15s; }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---------- STATS BAR ---------- */
+  .stats { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg-alt); }
+  .stats .wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 24px; padding: 40px 24px; }
+  .stat .num { font-family: "Poppins", sans-serif; font-weight: 800; font-size: 2.1rem; color: var(--accent); }
+  .stat .label { font-size: 13.5px; color: var(--ink-soft); margin-top: 4px; }
+
+  /* ---------- SECTION HEADERS ---------- */
+  section { padding: 96px 0; }
+  .section-head { max-width: 620px; margin-bottom: 56px; }
+  .section-tag { color: var(--accent); font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; }
+  .section-head h2 { font-size: clamp(1.8rem, 3.2vw, 2.4rem); font-weight: 700; margin-top: 10px; }
+  .section-head p { color: var(--ink-soft); margin-top: 14px; font-size: 1.05rem; }
+  .alt { background: var(--bg-alt); }
+
+  /* ---------- SERVICES GRID ---------- */
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+  .service-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 32px 28px; transition: border-color .2s, box-shadow .2s, transform .2s; }
+  .service-card:hover { border-color: var(--accent-light); box-shadow: 0 16px 40px rgba(107,47,224,.1); transform: translateY(-3px); }
+  .service-icon { width: 46px; height: 46px; border-radius: 12px; background: var(--accent-pale); display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 18px; }
+  .service-card h3 { font-size: 1.1rem; margin-bottom: 10px; }
+  .service-card p { color: var(--ink-soft); font-size: .95rem; }
+  .service-tag { display: inline-block; margin-top: 14px; font-size: 11.5px; font-weight: 700; color: var(--accent); background: var(--accent-pale); padding: 3px 10px; border-radius: 999px; }
+
+  /* ---------- HOW IT WORKS ---------- */
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; counter-reset: step; }
+  .step { position: relative; padding-left: 52px; }
+  .step::before { counter-increment: step; content: counter(step); position: absolute; left: 0; top: 0; width: 38px; height: 38px; border-radius: 10px; background: var(--ink); color: white; display: flex; align-items: center; justify-content: center; font-family: "Poppins", sans-serif; font-weight: 700; font-size: 15px; }
+  .step h3 { font-size: 1.05rem; margin-bottom: 8px; }
+  .step p { color: var(--ink-soft); font-size: .94rem; }
+
+  /* ---------- WHY US ---------- */
+  .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .why-item { display: flex; gap: 16px; padding: 22px 0; border-bottom: 1px solid var(--border); }
+  .why-check { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: white; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; }
+  .why-item h4 { font-size: 1rem; margin-bottom: 4px; }
+  .why-item p { color: var(--ink-soft); font-size: .92rem; }
+  @media (max-width: 760px) { .why-grid { grid-template-columns: 1fr; } }
+
+  /* ---------- CTA BANNER ---------- */
+  .cta-banner { background: linear-gradient(135deg, var(--ink) 0%, #231537 100%); border-radius: 24px; padding: 64px 48px; text-align: center; color: white; }
+  .cta-banner h2 { font-size: clamp(1.7rem, 3.4vw, 2.3rem); font-weight: 700; }
+  .cta-banner p { color: #c9c4da; max-width: 480px; margin: 16px auto 32px; font-size: 1.05rem; }
+  .cta-banner .btn-primary { background: var(--accent); }
+  .cta-banner .btn-primary:hover { background: var(--accent-light); }
+
+  /* ---------- FOOTER ---------- */
+  footer { padding: 56px 0 40px; border-top: 1px solid var(--border); }
+  footer .wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+  footer .foot-left { color: var(--ink-soft); font-size: 13.5px; }
+  footer .foot-links { display: flex; gap: 24px; font-size: 13.5px; color: var(--ink-soft); }
+  footer .foot-links a:hover { color: var(--accent); }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>AutoIA</h1>
-  <p>Automatización con inteligencia artificial para negocios gastronómicos en Argentina y Uruguay.</p>
+<nav>
+  <div class="wrap">
+    <div class="logo">Auto<span>IA</span></div>
+    <div class="nav-links">
+      <a href="#servicios">Servicios</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#por-que">Por qué AutoIA</a>
+      <a href="#contacto">Contacto</a>
+    </div>
+    <a class="nav-cta" href="#contacto">Hablemos</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Automatización con IA para gastronomía</div>
+    <h1>El empleado digital que <em>atiende, toma pedidos y nunca se cansa.</em></h1>
+    <p class="lead">AutoIA conecta inteligencia artificial, WhatsApp y tu operación diaria en una sola plataforma: pedidos, reservas, carta digital y control total desde un panel en tiempo real.</p>
+    <div class="hero-ctas">
+      <a class="btn-primary" href="#contacto">Solicitar una demo</a>
+      <a class="btn-secondary" href="#servicios">Ver todos los servicios</a>
+    </div>
+  </div>
 </header>
 
-<main>
-  <section>
-    <h2>Qué hacemos</h2>
-    <p>Desarrollamos agentes de WhatsApp con IA para restaurantes, pizzerías, sushi bars y cafeterías: toman pedidos, responden consultas sobre el menú, gestionan reservas y liberan tiempo del equipo del local para enfocarse en la atención presencial.</p>
-  </section>
+<div class="stats">
+  <div class="wrap">
+    <div class="stat"><div class="num">24/7</div><div class="label">Atención sin interrupciones</div></div>
+    <div class="stat"><div class="num">0</div><div class="label">Pedidos duplicados entre canales</div></div>
+    <div class="stat"><div class="num">100%</div><div class="label">Visibilidad desde el panel de control</div></div>
+    <div class="stat"><div class="num">Min</div><div class="label">De implementación, no semanas</div></div>
+  </div>
+</div>
 
-  <section>
-    <h2>Qué resolvemos</h2>
-    <div class="cards">
-      <div class="card">
-        <h3>Toma de pedidos 24/7</h3>
-        <p>El agente conversa con los clientes, arma el pedido, calcula el total y lo confirma, sin intervención manual.</p>
+<section id="servicios">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">Servicios</div>
+      <h2>Una plataforma, toda la operación de atención al cliente</h2>
+      <p>Cada producto funciona solo o integrado con los demás, compartiendo una misma base de datos para que ningún pedido se pierda ni se duplique entre canales.</p>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">💬</div>
+        <h3>Agente de WhatsApp con IA</h3>
+        <p>Toma pedidos completos, responde consultas de menú, horarios y políticas, gestiona reservas y calcula totales con descuentos — todo en conversación natural, sin guiones rígidos.</p>
+        <span class="service-tag">Disponible</span>
       </div>
-      <div class="card">
-        <h3>Reservas automatizadas</h3>
-        <p>Gestiona reservas de mesa respetando las políticas del local, directamente por WhatsApp.</p>
+
+      <div class="service-card">
+        <div class="service-icon">📊</div>
+        <h3>Panel de control en tiempo real</h3>
+        <p>Visualizá cada conversación, pedido y reserva a medida que ocurren. Prendé o apagá la IA por chat, respondé manualmente cuando lo necesites, y recibí notificaciones sonoras de pedidos nuevos.</p>
+        <span class="service-tag">Disponible</span>
       </div>
-      <div class="card">
-        <h3>Control humano</h3>
-        <p>El equipo del local puede tomar el control de cualquier conversación en cualquier momento desde un panel en vivo.</p>
+
+      <div class="service-card">
+        <div class="service-icon">🛒</div>
+        <h3>Carta digital con carrito</h3>
+        <p>Un mini-sitio propio del local, con fotos de los platos y carrito de compra, para pedidos sin pasar por WhatsApp — comparte la misma base de datos, así que nunca se duplica un pedido.</p>
+        <span class="service-tag">Disponible</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">🛵</div>
+        <h3>Centralización de plataformas externas</h3>
+        <p>Cargá manualmente en el mismo panel los pedidos que entran por PedidosYa o Rappi, para comandar todo desde un solo lugar mientras avanzamos hacia integraciones directas.</p>
+        <span class="service-tag">Disponible</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">🏷️</div>
+        <h3>Etiquetado y segmentación de clientes</h3>
+        <p>Etiquetas automáticas por método de pago y manuales por estado (queja, pendiente de pago, pendiente de contacto), con búsqueda y filtros para no perder de vista ningún caso.</p>
+        <span class="service-tag">Disponible</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">🔗</div>
+        <h3>Integración con sistemas de gestión (POS)</h3>
+        <p>Trabajamos para que los pedidos tomados por el agente lleguen directo a tu sistema de gestión actual (Thinkion, Fudo, MaxiRest), sin carga manual.</p>
+        <span class="service-tag">En desarrollo</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">💳</div>
+        <h3>Pagos integrados</h3>
+        <p>Cobro online directo desde la carta digital y desde WhatsApp, para pedidos pagos de punta a punta sin intervención humana.</p>
+        <span class="service-tag">Roadmap</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">📈</div>
+        <h3>Analítica e inteligencia de negocio</h3>
+        <p>Reportes de ventas, productos más pedidos, horarios pico y comportamiento de clientes, para decisiones basadas en datos reales de tu propio canal.</p>
+        <span class="service-tag">Roadmap</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">🏦</div>
+        <h3>Soluciones financieras para gastronomía</h3>
+        <p>Como parte de la visión de largo plazo de AutoIA, trabajamos hacia productos de crédito y financiamiento pensados para las necesidades de capital de trabajo de un restaurante.</p>
+        <span class="service-tag">Visión a futuro</span>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section>
-    <h2>Contacto</h2>
-    <p>Para conocer más sobre AutoIA, escribinos a <a href="mailto:autoia.ar@gmail.com">autoia.ar@gmail.com</a>.</p>
-  </section>
-</main>
+<section id="como-funciona" class="alt">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">Cómo funciona</div>
+      <h2>De la primera conversación al pedido confirmado</h2>
+      <p>Sin integraciones complejas ni semanas de implementación: configuramos tu negocio y quedás en vivo.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <h3>Cargamos tu negocio</h3>
+        <p>Menú, horarios, políticas de reserva y zonas de delivery — todo lo que tu agente necesita saber para atender como lo haría tu mejor empleado.</p>
+      </div>
+      <div class="step">
+        <h3>Conectamos tu WhatsApp</h3>
+        <p>Usamos la API oficial de WhatsApp Business de Meta, verificada y publicada — sin números paralelos ni apps de terceros no oficiales.</p>
+      </div>
+      <div class="step">
+        <h3>El agente atiende en vivo</h3>
+        <p>Responde consultas, toma pedidos y reservas, calcula totales y aplica descuentos automáticamente, las 24 horas.</p>
+      </div>
+      <div class="step">
+        <h3>Vos tenés el control</h3>
+        <p>Seguís todo desde el panel, tomás el control manual cuando quieras, y recibís cada pedido y reserva organizados y notificados al instante.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="por-que">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">Por qué AutoIA</div>
+      <h2>Construido para gastronomía, no adaptado desde otro rubro</h2>
+      <p>No somos una plataforma de chatbots genérica a la que le agregaste un menú. AutoIA nació para resolver la operación diaria de un restaurante.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-item">
+        <div class="why-check">✓</div>
+        <div>
+          <h4>Un solo canal, sin pedidos duplicados</h4>
+          <p>WhatsApp y la carta digital comparten la misma base de datos del cliente — nunca se generan dos pedidos para la misma conversación.</p>
+        </div>
+      </div>
+      <div class="why-item">
+        <div class="why-check">✓</div>
+        <div>
+          <h4>Cálculo de precios 100% confiable</h4>
+          <p>La IA identifica qué pidió el cliente, pero el total siempre se calcula de forma determinística contra tu menú — nunca inventa ni suma mal.</p>
+        </div>
+      </div>
+      <div class="why-item">
+        <div class="why-check">✓</div>
+        <div>
+          <h4>Visibilidad total, nunca a ciegas</h4>
+          <p>Un panel en tiempo real te muestra cada conversación activa, con la posibilidad de intervenir cuando lo necesites.</p>
+        </div>
+      </div>
+      <div class="why-item">
+        <div class="why-check">✓</div>
+        <div>
+          <h4>Tono de marca cuidado</h4>
+          <p>Reglas estrictas de comunicación: profesional, cálido y sin desvíos, sin importar cómo le hablen al agente.</p>
+        </div>
+      </div>
+      <div class="why-item">
+        <div class="why-check">✓</div>
+        <div>
+          <h4>Infraestructura oficial y verificada</h4>
+          <p>API oficial de Meta para WhatsApp Business, negocio verificado y aplicación publicada — sin atajos técnicos que puedan cortarse de un día para el otro.</p>
+        </div>
+      </div>
+      <div class="why-item">
+        <div class="why-check">✓</div>
+        <div>
+          <h4>Pensado para crecer con vos</h4>
+          <p>La misma arquitectura que hoy toma pedidos está lista para sumar pagos, integraciones con tu POS y más, a medida que tu negocio lo necesite.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contacto" class="alt">
+  <div class="wrap">
+    <div class="cta-banner">
+      <h2>Conocé AutoIA en una demo de 20 minutos</h2>
+      <p>Te mostramos el agente funcionando en vivo, con pedidos reales, y resolvemos cualquier duda sobre cómo se adapta a tu local.</p>
+      <a class="btn-primary" href="mailto:autoia.ar@gmail.com">Escribinos a autoia.ar@gmail.com</a>
+    </div>
+  </div>
+</section>
 
 <footer>
-  AutoIA · Buenos Aires, Argentina
+  <div class="wrap">
+    <div class="foot-left">AutoIA · Buenos Aires, Argentina</div>
+    <div class="foot-links">
+      <a href="/privacidad/">Política de privacidad</a>
+      <a href="mailto:autoia.ar@gmail.com">Contacto</a>
+    </div>
+  </div>
 </footer>
 
 </body>
